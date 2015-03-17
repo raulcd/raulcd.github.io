@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Create Blog using Pelican and deploy in github pages</title>
+        <link rel="stylesheet" href="http://raulcd.com/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="http://raulcd.com/">Raúl Cumplido </a></h1>
+                <nav><ul>
+                    <li><a href="http://raulcd.com/pages/about-raul-cumplido.html">About Raúl Cumplido</a></li>
+                    <li class="active"><a href="http://raulcd.com/category/articles.html">articles</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://raulcd.com/create-blog-using-pelican-and-deploy-in-github-pages.html" rel="bookmark"
+           title="Permalink to Create Blog using Pelican and deploy in github pages">Create Blog using Pelican and deploy in github pages</a></h1>
+<a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="raulcd">Tweet</a><script type="text/javascript" src="//platform.twitter.com/widgets.js"></script>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2014-07-07T18:30:00+02:00">
+                Published: Mon 07 July 2014
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://raulcd.com/author/raul-cumplido.html">Raúl Cumplido</a>
+        </address>
+<p>In <a href="http://raulcd.com/category/articles.html">articles</a>. </p>
+
+</footer><!-- /.post-info -->      <p>This website has been created using pelican. 
+<a href="http://pelican.readthedocs.org/">Pelican</a> is static site 
+generator written in Python.</p>
+<p>Basically the needs for the project were:</p>
+<ul>
+<li>Easy deployment and mantainance</li>
+<li>Write articles using Markdown</li>
+<li>Code syntax highlighting</li>
+</ul>
+<p>After a quick research in order to select the framework 
+to use in order to keep things simple, Pelican had all the features needed.</p>
+<h2>Generation of website</h2>
+<p>Pelican is really easy to start with. You just need to create your project and 
+install pelican:</p>
+<div class="highlight"><pre><span class="gp">$</span> pip install pelican
+</pre></div>
+
+
+<p>If you want to use markdown you will need to install it as a dependency also:</p>
+<div class="highlight"><pre><span class="gp">$</span> pip install markdown
+</pre></div>
+
+
+<p>Once you have installed pelican the only thing you need to do is generate the 
+skeleton of the blog:</p>
+<div class="highlight"><pre><span class="gp">$</span> pelican-quickstart
+</pre></div>
+
+
+<p>It will prompt several questions about your site. Pelican automatically 
+generates some files as a fabric script and a Makefile to make even easiers 
+your deployments.</p>
+<p>Once this is done you will need to start writing your content under the 
+content folder. You can add subfolders to the content folder and the names 
+of the subfolders will be used as categories for your blogs.</p>
+<p>Once you have your article generated (<a href="https://github.com/raulcd/fonti/blob/master/content/articles/generate_pelican_blog.md">sample file</a>) is time to generate 
+your site. There are several ways to generate your code:</p>
+<div class="highlight"><pre><span class="gp">$</span> pelican content
+<span class="gp">#</span> Or you can use the generated Makefile
+<span class="gp">$</span> make html
+</pre></div>
+
+
+<p>The next Exception was raised because my locale settings were 
+not set:</p>
+<div class="highlight"><pre><span class="n">File</span> <span class="s">&quot;.../lib/python2.7/locale.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">443</span><span class="p">,</span> <span class="ow">in</span> <span class="n">_parse_localename</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="s">&#39;unknown locale: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">localename</span>
+<span class="ne">ValueError</span><span class="p">:</span> <span class="n">unknown</span> <span class="n">locale</span><span class="p">:</span> <span class="n">UTF</span><span class="o">-</span><span class="mi">8</span>
+</pre></div>
+
+
+<p>You can set your locale for your user (modifying your .bash_profile) or 
+for the session:</p>
+<div class="highlight"><pre><span class="gp">$</span> <span class="nb">export </span><span class="nv">LC_ALL</span><span class="o">=</span>en_UK.UTF-8
+<span class="gp">$</span> <span class="nb">export </span><span class="nv">LANG</span><span class="o">=</span>en_UK.UTF-8
+</pre></div>
+
+
+<p>Once you have generated your content you can run a Development server 
+to see the result:</p>
+<div class="highlight"><pre><span class="gp">$</span> make serve
+</pre></div>
+
+
+<p>And you will be able to access localhost on the port 8000 by default 
+to see the result.</p>
+<h2>Deployment in github pages</h2>
+<p>There are 
+<a href="https://help.github.com/articles/user-organization-and-project-pages">two types of github pages</a>. 
+Project and user ones. If you want 
+to deploy to your project you can use the <em>github</em> target on the Makefile:</p>
+<div class="highlight"><pre><span class="gp">$</span> make github
+</pre></div>
+
+
+<p>This will post to the github pages branch of your repository.</p>
+<p>But if you want to use the github pages under <strong><em>username.github.com</em></strong> you 
+will need to do something more.</p>
+<p>First of all you need to have a repository with your username at github. The 
+repository needs to be called <strong><em>username.github.io</em></strong> in my case 
+<strong><em>raulcd.github.io</em></strong>.</p>
+<p>In order to make the process easier you can use the 
+<a href="https://github.com/davisp/ghp-import">GitHub Pages Import</a>. You can install 
+it using pip:</p>
+<div class="highlight"><pre><span class="gp">$</span> pip install ghp-import
+</pre></div>
+
+
+<p>And to deploy you will need to run the next commands:</p>
+<div class="highlight"><pre><span class="gp">$</span> make html
+<span class="gp">$</span> ghp-import output
+<span class="gp">$</span> git push git@github.com:username/username.github.io.git gh-pages:master
+</pre></div>
+
+
+<p>You can also modify your Makefile to run the github target executing the 
+previous commands.</p>
+<p>Your code will be deployed and after some minutes it will be availabe at 
+<strong><em>http://username.github.com</em></strong>.</p>
+<p>If you have your own domain and want it to be redirected to your github pages 
+you will need to create a <code>CNAME</code> file and deploy on github pages.</p>
+<p>Create a directory <code>content/extra</code> and a file named <code>CNAME</code> (upper case) with 
+the domain you want to redirect:</p>
+<div class="highlight"><pre><span class="gp">$</span> cat CNAME
+<span class="go">yourdomain.com</span>
+</pre></div>
+
+
+<p>The you can use the <code>STATIC_PATHS</code> on the <code>pelicanconf.py</code> file to tell pelican 
+to deploy the <code>CNAME</code> file in the root directory when generating the content:</p>
+<div class="highlight"><pre><span class="n">STATIC_PATHS</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;extra/CNAME&#39;</span><span class="p">]</span>
+<span class="n">EXTRA_PATH_METADATA</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;extra/CNAME&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;path&#39;</span><span class="p">:</span> <span class="s">&#39;CNAME&#39;</span><span class="p">},}</span>
+</pre></div>
+
+
+<p>You will need to configure an <code>A</code>, an <code>ALIAS</code> or a <code>CNAME</code> record on your DNS 
+provider to do the DNS redirection. You can see more info on the 
+<a href="https://help.github.com/articles/adding-a-cname-file-to-your-repository">github pages domain configuration</a>.</p>
+    </div><!-- /.entry-content -->
+    <div class="comments">
+      <h2>Comments !</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'raulcd';
+        var disqus_identifier = 'create-blog-using-pelican-and-deploy-in-github-pages.html';
+        var disqus_url = 'http://raulcd.com/create-blog-using-pelican-and-deploy-in-github-pages.html';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//raulcd.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="http://twitter.com/raulcumplido">twitter</a></li>
+                            <li><a href="http://github.com/raulcd">github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'raulcd';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>
