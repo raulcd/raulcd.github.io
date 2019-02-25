@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+        integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+
+    <link href="https://fonts.googleapis.com/css?family=Montserrat|Ubuntu+Mono" rel="stylesheet">
+
+    <title>Create Blog using Pelican and deploy in github pages</title>
+
+    <link rel="stylesheet" href="/css/stylesheet.css">
+</head>
+
+<body>
+    <div class="container-fluid">
+        <nav class="navbar navbar-expand-md navbar-light">
+
+            
+            <span class="navbar-brand mb-0 h1"></span>
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle Navigation" name="button">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-item nav-link " href="/">Home</a>
+                    
+                </div>
+            </div>
+        </nav>
+
+        <section id="page-title">
+            <h1><a href="/">Raúl Cumplido&#39;s Blog</a></h1>
+        </section>
+
+
+<div class="container single">
+    <article>
+        <h2>Create Blog using Pelican and deploy in github pages</h2>
+        <div class="date-time-title">Monday, July 7, 2014</div>
+        
+
+<p>This website has been created using pelican.
+<a href="http://pelican.readthedocs.org/">Pelican</a> is static site
+generator written in Python.</p>
+
+<p>Basically the needs for the project were:</p>
+
+<ul>
+<li>Easy deployment and mantainance</li>
+<li>Write articles using Markdown</li>
+<li>Code syntax highlighting</li>
+</ul>
+
+<p>After a quick research in order to select the framework
+to use in order to keep things simple, Pelican had all the features needed.</p>
+
+<h2 id="generation-of-website">Generation of website</h2>
+
+<p>Pelican is really easy to start with. You just need to create your project and
+install pelican:</p>
+
+<pre><code class="language-console">$ pip install pelican
+</code></pre>
+
+<p>If you want to use markdown you will need to install it as a dependency also:</p>
+
+<pre><code class="language-console">$ pip install markdown
+</code></pre>
+
+<p>Once you have installed pelican the only thing you need to do is generate the
+skeleton of the blog:</p>
+
+<pre><code class="language-console">$ pelican-quickstart
+</code></pre>
+
+<p>It will prompt several questions about your site. Pelican automatically
+generates some files as a fabric script and a Makefile to make even easiers
+your deployments.</p>
+
+<p>Once this is done you will need to start writing your content under the
+content folder. You can add subfolders to the content folder and the names
+of the subfolders will be used as categories for your blogs.</p>
+
+<p>Once you have your article generated (<a href="https://github.com/raulcd/fonti/blob/master/content/articles/generate_pelican_blog.md">sample file</a>) is time to generate
+your site. There are several ways to generate your code:</p>
+
+<pre><code class="language-console">$ pelican content
+# Or you can use the generated Makefile
+$ make html
+</code></pre>
+
+<p>The next Exception was raised because my locale settings were
+not set:</p>
+
+<pre><code class="language-python">File &quot;.../lib/python2.7/locale.py&quot;, line 443, in _parse_localename
+    raise ValueError, 'unknown locale: %s' % localename
+ValueError: unknown locale: UTF-8
+</code></pre>
+
+<p>You can set your locale for your user (modifying your .bash_profile) or
+for the session:</p>
+
+<pre><code class="language-console">$ export LC_ALL=en_UK.UTF-8
+$ export LANG=en_UK.UTF-8
+</code></pre>
+
+<p>Once you have generated your content you can run a Development server
+to see the result:</p>
+
+<pre><code class="language-console">$ make serve
+</code></pre>
+
+<p>And you will be able to access localhost on the port 8000 by default
+to see the result.</p>
+
+<h2 id="deployment-in-github-pages">Deployment in github pages</h2>
+
+<p>There are
+<a href="https://help.github.com/articles/user-organization-and-project-pages">two types of github pages</a>.
+Project and user ones. If you want
+to deploy to your project you can use the <em>github</em> target on the Makefile:</p>
+
+<pre><code class="language-console">$ make github
+</code></pre>
+
+<p>This will post to the github pages branch of your repository.</p>
+
+<p>But if you want to use the github pages under <strong><em>username.github.com</em></strong> you
+will need to do something more.</p>
+
+<p>First of all you need to have a repository with your username at github. The
+repository needs to be called <strong><em>username.github.io</em></strong> in my case
+<strong><em>raulcd.github.io</em></strong>.</p>
+
+<p>In order to make the process easier you can use the
+<a href="https://github.com/davisp/ghp-import">GitHub Pages Import</a>. You can install
+it using pip:</p>
+
+<pre><code class="language-console">$ pip install ghp-import
+</code></pre>
+
+<p>And to deploy you will need to run the next commands:</p>
+
+<pre><code class="language-console">$ make html
+$ ghp-import output
+$ git push git@github.com:username/username.github.io.git gh-pages:master
+</code></pre>
+
+<p>You can also modify your Makefile to run the github target executing the
+previous commands.</p>
+
+<p>Your code will be deployed and after some minutes it will be availabe at
+<strong><em><a href="http://username.github.com">http://username.github.com</a></em></strong>.</p>
+
+<p>If you have your own domain and want it to be redirected to your github pages
+you will need to create a <code>CNAME</code> file and deploy on github pages.</p>
+
+<p>Create a directory <code>content/extra</code> and a file named <code>CNAME</code> (upper case) with
+the domain you want to redirect:</p>
+
+<pre><code class="language-console">$ cat CNAME
+yourdomain.com
+</code></pre>
+
+<p>The you can use the <code>STATIC_PATHS</code> on the <code>pelicanconf.py</code> file to tell pelican
+to deploy the <code>CNAME</code> file in the root directory when generating the content:</p>
+
+<pre><code class="language-python">STATIC_PATHS = ['extra/CNAME']
+EXTRA_PATH_METADATA = {'extra/CNAME': {'path': 'CNAME'},}
+</code></pre>
+
+<p>You will need to configure an <code>A</code>, an <code>ALIAS</code> or a <code>CNAME</code> record on your DNS
+provider to do the DNS redirection. You can see more info on the
+<a href="https://help.github.com/articles/adding-a-cname-file-to-your-repository">github pages domain configuration</a>.</p>
+
+    </article>
+</div>
+
+<footer>
+    <hr>
+    <small>
+        &copy; Raúl Cumplido 2019 
+    </small>
+</footer>
+</div> 
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+    integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
+    integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

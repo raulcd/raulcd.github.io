@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+        integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+
+    <link href="https://fonts.googleapis.com/css?family=Montserrat|Ubuntu+Mono" rel="stylesheet">
+
+    <title>Elasticsearch, Logstash and Kibana on Docker</title>
+
+    <link rel="stylesheet" href="/css/stylesheet.css">
+</head>
+
+<body>
+    <div class="container-fluid">
+        <nav class="navbar navbar-expand-md navbar-light">
+
+            
+            <span class="navbar-brand mb-0 h1"></span>
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle Navigation" name="button">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-item nav-link " href="/">Home</a>
+                    
+                </div>
+            </div>
+        </nav>
+
+        <section id="page-title">
+            <h1><a href="/">Raúl Cumplido&#39;s Blog</a></h1>
+        </section>
+
+
+<div class="container single">
+    <article>
+        <h2>Elasticsearch, Logstash and Kibana on Docker</h2>
+        <div class="date-time-title">Wednesday, February 11, 2015</div>
+        
+
+<p>While doing performance testing on a project I needed to process the access logs
+of our web servers to define the navigation profile of our current users.</p>
+
+<p>So I though it would be a nice time to play with Elasticsearch, Logstash and Kibana
+as I&rsquo;ve heard of the stack.</p>
+
+<h2 id="elk-stack">ELK Stack</h2>
+
+<p>The first thing to notice when using it is how easy to use is. It took me a couple of hours
+since I decided to use it to have a prototype working on my local host. So let&rsquo;s see each one of them.</p>
+
+<p><img src="/img/log-logstash-elasticsearch-kibana-flow-small.jpg" alt="kibana stack image" /></p>
+
+<h3 id="elasticsearch">Elasticsearch</h3>
+
+<p><a href="http://www.elasticsearch.org/overview/elasticsearch">Elasticsearch</a> is a search server based on Lucene.
+Is Open Source and can be found on the <a href="https://github.com/elasticsearch/elasticsearch">Github Elasticsearch project</a></p>
+
+<p>In order to set up Elastic Search the only thing that you need to do is, download the package and execute it:</p>
+
+<pre><code class="language-console">➜  wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.4.2.tar.gz
+➜  tar -zxvf elasticsearch-1.4.2.tar.gz
+➜  cd elasticsearch-1.4.2
+➜  ./bin/elasticsearch
+[2015-02-11 10:43:21,573][INFO ][node                     ] [Jumbo Carnation] version[1.4.2], pid[6019], build[927caff/2014-12-16T14:11:12Z]
+[2015-02-11 10:43:21,574][INFO ][node                     ] [Jumbo Carnation] initializing ...
+[2015-02-11 10:43:21,578][INFO ][plugins                  ] [Jumbo Carnation] loaded [], sites []
+[2015-02-11 10:43:23,483][INFO ][node                     ] [Jumbo Carnation] initialized
+[2015-02-11 10:43:23,483][INFO ][node                     ] [Jumbo Carnation] starting ...
+[2015-02-11 10:43:23,528][INFO ][transport                ] [Jumbo Carnation] bound_address {inet[/0:0:0:0:0:0:0:0:9300]}, publish_address {inet[/10.105.14.17:9300]}
+[2015-02-11 10:43:23,540][INFO ][discovery                ] [Jumbo Carnation] elasticsearch/_EGLpT09SfCaIbfW4KCSqg
+[2015-02-11 10:43:27,315][INFO ][cluster.service          ] [Jumbo Carnation] new_master [Jumbo Carnation][_EGLpT09SfCaIbfW4KCSqg][pumuki][inet[/10.105.14.17:9300]], reason: zen-disco-join (elected_as_master)
+[2015-02-11 10:43:27,332][INFO ][http                     ] [Jumbo Carnation] bound_address {inet[/0:0:0:0:0:0:0:0:9200]}, publish_address {inet[/10.105.14.17:9200]}
+[2015-02-11 10:43:27,332][INFO ][node                     ] [Jumbo Carnation] started
+[2015-02-11 10:43:27,783][INFO ][gateway                  ] [Jumbo Carnation] recovered [4] indices into cluster_state
+</code></pre>
+
+<p>This will set elasticsearch web server listening on port 9200 on your localhost.</p>
+
+<p>At this moment you should be able to retrieve the following information:</p>
+
+<pre><code class="language-console">➜  curl -XGET http://localhost:9200/
+{
+  &quot;status&quot; : 200,
+  &quot;name&quot; : &quot;Jumbo Carnation&quot;,
+  &quot;cluster_name&quot; : &quot;elasticsearch&quot;,
+  &quot;version&quot; : {
+    &quot;number&quot; : &quot;1.4.2&quot;,
+    &quot;build_hash&quot; : &quot;927caff6f05403e936c20bf4529f144f0c89fd8c&quot;,
+    &quot;build_timestamp&quot; : &quot;2014-12-16T14:11:12Z&quot;,
+    &quot;build_snapshot&quot; : false,
+    &quot;lucene_version&quot; : &quot;4.10.2&quot;
+  },
+  &quot;tagline&quot; : &quot;You Know, for Search&quot;
+}
+</code></pre>
+
+<p>You can also get the stats by doing:</p>
+
+<pre><code class="language-console">➜  curl -XGET http://localhost:9200/_stats
+{&quot;_shards&quot;:{&quot;total&quot;:0,&quot;successful&quot;:0,&quot;failed&quot;:0},&quot;_all&quot;:{&quot;primaries&quot;:{},&quot;total&quot;:{}},&quot;indices&quot;:{}}
+</code></pre>
+
+<p>When I was playing I processed several times different logs. So in order to clean all the information of
+my elasticsearch instance I found quite useful the following command that <strong><em>will remove</em></strong> all your
+existing data. So <strong><em>BE CAREFULL</em></strong>:</p>
+
+<pre><code class="language-console">➜  curl -XDELETE &quot;http://localhost:9200/*&quot;
+{&quot;acknowledged&quot;:true}
+</code></pre>
+
+<h3 id="logstash">Logstash</h3>
+
+<p><a href="http://logstash.net/">Logstash</a> is a tool to manage events and logs. Basically you use it to collect, parse and store logs.
+When used with elasticsearch you can send the processed logs structured to elasticsearch to be queried.
+It&rsquo;s also Open Source, it&rsquo;s part of the elasticsearch family and you can find the source code on
+the <a href="https://github.com/elasticsearch/logstash">Github project repo</a>.</p>
+
+<p>In order to setup Logstash you will need to Download the package:</p>
+
+<pre><code class="language-console">➜  wget https://download.elasticsearch.org/logstash/logstash/logstash-1.4.2.tar.gz
+➜  tar -zxvf logstashh-1.4.2.tar.gz
+➜  cd logstash-1.4.2
+</code></pre>
+
+<p>To process your Access logs and send them to Elasticsearch you will need to create the logstash configuration file.
+My configuration file is similar to the following one:</p>
+
+<pre><code class="language-console">➜  cat logstash_simple.conf 
+input {
+  file {
+    path =&gt; &quot;/var/log/access/*.log&quot;
+    type =&gt; &quot;apache_access&quot;
+  }
+}
+
+filter {
+  if [path] =~ &quot;access&quot; {
+    mutate { replace =&gt; { &quot;type&quot; =&gt; &quot;apache_access&quot; } }
+    grok {
+      match =&gt; { &quot;message&quot; =&gt; &quot;%{COMBINEDAPACHELOG}&quot; }
+    }
+  }
+  date {
+    match =&gt; [ &quot;timestamp&quot; , &quot;dd/MMM/yyyy:HH:mm:ss Z&quot; ]
+  }
+}
+
+
+output {
+  elasticsearch_http {
+    host =&gt; localhost 
+  } 
+  stdout { 
+  } 
+}
+➜
+</code></pre>
+
+<p>In the input section we define which logs logstash needs to process. You can define
+different types of input but we are basically just getting them from files.
+To see other types of input take a look at the <a href="http://logstash.net/docs/1.4.2/">documentation</a>.</p>
+
+<p>The filter is how logstash will process your logs. We are using grok which is like a regex parser
+for unstructured data. We just use the <em>%{COMBINEDAPACHELOG}</em> regex and set the date format.</p>
+
+<p>For the output we have created two outputs. Our Elasticsearch instance and standard output,
+basically to see what is going on.</p>
+
+<p>In order to run logstash:</p>
+
+<pre><code class="language-console">➜  bin/logstash -f logstash_simple.conf
+</code></pre>
+
+<h3 id="kibana">Kibana</h3>
+
+<p><a href="http://www.elasticsearch.org/overview/kibana/">Kibana</a> is a visualization tool for data on top
+of elasticsearch. The <a href="https://github.com/elasticsearch/kibana">Github project</a>.</p>
+
+<p>In order to set it up just download it and run it:</p>
+
+<pre><code class="language-console">➜  wget https://download.elasticsearch.org/kibana/kibana/kibana-4.0.0-beta3.tar.gz 
+➜  tar -zxvf kibana-4.0.0-beta3.tar.gz
+➜  cd kibana-4.0.0-beta3
+➜  bin/kibana
+The Kibana Backend is starting up... be patient
+{&quot;@timestamp&quot;:&quot;2015-02-11T12:34:29+00:00&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;name&quot;:&quot;Kibana&quot;,&quot;message&quot;:&quot;Kibana server started on tcp://0.0.0.0:5601 in production mode.&quot;}
+</code></pre>
+
+<p>And kibana should be running on your localhost at port 5601.</p>
+
+<p>The first page will ask you to create an index. If you don&rsquo;t have any data yet you will not be able to create it.
+Once you have created the index you can start playing querying the data.</p>
+
+<h2 id="deploy">Deploy</h2>
+
+<p>Once the Stack was locally working I thought it would be good to deploy it to one of our boxes
+and send periodically our access logs to be able to have the logs updated every once in a while.</p>
+
+<p>And I thought that maybe creating a Docker container to be able to replicate it easily on the future may
+be a good possibility.</p>
+
+<p><img src="/img/docker_logo.png" alt="Docker image" /></p>
+
+<h3 id="first-approach-one-to-rule-them-all">First Approach - One to rule them all</h3>
+
+<p>My first approach was to create a single container with the three services running on top of it.
+I know that&rsquo;s not how you are supposed to use Docker but I wanted to try first.</p>
+
+<p>So my idea was to have it everything running with supervisor on the docker container and add a data volume
+to the container with the logs where logstash will pick the files.</p>
+
+<p>The code is available on <a href="https://github.com/raulcd/elk-docker">this Github repo</a>.</p>
+
+<h4 id="create-the-image">Create the image</h4>
+
+<p>As it is my first post about Docker I will explain a little bit how to create the image and build it.
+The image created was from a basic ubuntu one and basically you need to create a file called Dockerfile
+with <a href="https://github.com/raulcd/elk-docker/blob/master/Dockerfile">the information in the link</a>.</p>
+
+<p>In order to build the container you just need to run:</p>
+
+<pre><code class="language-console">➜  docker build -t elk:latest .
+</code></pre>
+
+<p>This will create a local image that can be executed. You can list your images doing:</p>
+
+<pre><code class="language-console">➜  docker images
+REPOSITORY                         TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+elk                                latest              28bf7af29dc1        55 seconds ago      575.7 MB
+</code></pre>
+
+<h4 id="running-the-image">Running the image</h4>
+
+<p>Once the image is built you can run it just by doing:</p>
+
+<pre><code class="language-code">➜  docker run -d -p 5000:5601 --name elk -v /path/access-logs:/var/log/access elk
+</code></pre>
+
+<p>This will link your local port <em>5000</em> with the port <em>5601</em> on the container (which is the kibana one) and will
+add you local <em>/path/access-logs</em> to the container. Is at this path where you are supposed to be logging your
+access logs.</p>
+
+<p>TODO Images, separate containers, push the image to docker hub</p>
+
+    </article>
+</div>
+
+<footer>
+    <hr>
+    <small>
+        &copy; Raúl Cumplido 2019 
+    </small>
+</footer>
+</div> 
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+    integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
+    integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

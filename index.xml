@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Raúl Cumplido&#39;s Blog</title>
+    <link>https://raul.dev/</link>
+    <description>Recent content on Raúl Cumplido&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 17 Mar 2015 11:30:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://raul.dev/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>How Python caches compiled bytecode.</title>
+      <link>https://raul.dev/post/python_optimized_files/</link>
+      <pubDate>Tue, 17 Mar 2015 11:30:00 +0000</pubDate>
+      
+      <guid>https://raul.dev/post/python_optimized_files/</guid>
+      <description>While reading an email at the Python developers mailing list about PEP-488 (which is not yet approved and is under discussion) I wondered how bytecode files works in Python.
+The purpose of this post is to take some notes for myself and share what I find.
+PEP-3147 While I was reading the proposed PEP-488 (which will be explained later) there was several references to PEP-3147.
+Before PEP-3147 was implemented, files were saved with the format &#39;{filename}.</description>
+    </item>
+    
+    <item>
+      <title>Elasticsearch, Logstash and Kibana on Docker</title>
+      <link>https://raul.dev/post/elastic_search_logstash_kibana/</link>
+      <pubDate>Wed, 11 Feb 2015 18:30:00 +0000</pubDate>
+      
+      <guid>https://raul.dev/post/elastic_search_logstash_kibana/</guid>
+      <description>While doing performance testing on a project I needed to process the access logs of our web servers to define the navigation profile of our current users.
+So I though it would be a nice time to play with Elasticsearch, Logstash and Kibana as I&amp;rsquo;ve heard of the stack.
+ELK Stack The first thing to notice when using it is how easy to use is. It took me a couple of hours since I decided to use it to have a prototype working on my local host.</description>
+    </item>
+    
+    <item>
+      <title>Create Blog using Pelican and deploy in github pages</title>
+      <link>https://raul.dev/post/generate_pelican_blog/</link>
+      <pubDate>Mon, 07 Jul 2014 18:30:00 +0000</pubDate>
+      
+      <guid>https://raul.dev/post/generate_pelican_blog/</guid>
+      <description>This website has been created using pelican. Pelican is static site generator written in Python.
+Basically the needs for the project were:
+ Easy deployment and mantainance Write articles using Markdown Code syntax highlighting  After a quick research in order to select the framework to use in order to keep things simple, Pelican had all the features needed.
+Generation of website Pelican is really easy to start with. You just need to create your project and install pelican:</description>
+    </item>
+    
+  </channel>
+</rss>
