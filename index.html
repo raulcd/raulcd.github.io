@@ -31,42 +31,53 @@
 
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav">
-                    <a class="nav-item nav-link active" href="/">Home</a>
-                    
+                    <section id="page-title">
+                        <a class="nav-item nav-link active" href="/">Raúl Cumplido&#39;s Blog</a>
+                    </section>
+                    <a class="nav-item nav-link" href="https://github.com/raulcd"
+                        target="_blank">GitHub</a>
+                    <a class="nav-item nav-link"
+                        href="https://www.linkedin.com/in/raulcumplido" target="_blank">Linkedin</a>
+                    <a class="nav-item nav-link" href="https://twitter.com/raulcumplido"
+                        target="_blank">Twitter</a>
                 </div>
             </div>
         </nav>
 
-        <section id="page-title">
-            <h1><a href="/">Raúl Cumplido&#39;s Blog</a></h1>
-        </section>
-
 <div class="container home">
+
+
+    <section id="page-title">
+        <h1><a href="/">Raúl Cumplido&#39;s Blog</a></h1>
+    </section>
     
-    <article>
+
+    <article id="article">
         <h2><a href="https://raul.dev/post/python_optimized_files/" title="How Python caches compiled bytecode.">How Python caches compiled bytecode.</a></h2>
         <div class="date-time-title">Tuesday, March 17, 2015</div>
+        <div class="description">How is Python using the bytecode files and why?</div>
+        
         While reading an email at the Python developers mailing list about PEP-488 (which is not yet approved and is under discussion) I wondered how bytecode files works in Python.
 The purpose of this post is to take some notes for myself and share what I find.
 PEP-3147 While I was reading the proposed PEP-488 (which will be explained later) there was several references to PEP-3147.
 Before PEP-3147 was implemented, files were saved with the format '{filename}.
+        
     </article>
     
-    <article>
+
+    <article id="article">
         <h2><a href="https://raul.dev/post/elastic_search_logstash_kibana/" title="Elasticsearch, Logstash and Kibana on Docker">Elasticsearch, Logstash and Kibana on Docker</a></h2>
         <div class="date-time-title">Wednesday, February 11, 2015</div>
-        While doing performance testing on a project I needed to process the access logs of our web servers to define the navigation profile of our current users.
-So I though it would be a nice time to play with Elasticsearch, Logstash and Kibana as I&rsquo;ve heard of the stack.
-ELK Stack The first thing to notice when using it is how easy to use is. It took me a couple of hours since I decided to use it to have a prototype working on my local host.
+        <div class="description">Set up Elasticsearch - Logstash - Kibana stack in a Docker container</div>
+        
     </article>
     
-    <article>
+
+    <article id="article">
         <h2><a href="https://raul.dev/post/generate_pelican_blog/" title="Create Blog using Pelican and deploy in github pages">Create Blog using Pelican and deploy in github pages</a></h2>
         <div class="date-time-title">Monday, July 7, 2014</div>
-        This website has been created using pelican. Pelican is static site generator written in Python.
-Basically the needs for the project were:
- Easy deployment and mantainance Write articles using Markdown Code syntax highlighting  After a quick research in order to select the framework to use in order to keep things simple, Pelican had all the features needed.
-Generation of website Pelican is really easy to start with. You just need to create your project and install pelican:
+        <div class="description">How to create your Pelican Blog and deploy on github pages</div>
+        
     </article>
     
 </div>
