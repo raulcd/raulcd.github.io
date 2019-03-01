@@ -6,10 +6,21 @@
     <description>Recent content on Raúl Cumplido&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 17 Mar 2015 11:30:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 28 Feb 2019 20:40:19 +0000</lastBuildDate>
     
 	<atom:link href="https://raul.dev/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Blog Reborn</title>
+      <link>https://raul.dev/post/blog_reborn/</link>
+      <pubDate>Thu, 28 Feb 2019 20:40:19 +0000</pubDate>
+      
+      <guid>https://raul.dev/post/blog_reborn/</guid>
+      <description>It has been a really long time since I have not written anything. I started my own blog 4 years ago and I have decided to start writing again.
+There are several reasons behind it.
+ I am always trying to learn but lately I am taking some efforts to do it more consistently. I want to have a place where I can put my notes. Having them publicly available might help someone.</description>
+    </item>
     
     <item>
       <title>How Python caches compiled bytecode.</title>
