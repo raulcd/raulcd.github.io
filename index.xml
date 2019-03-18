@@ -6,10 +6,21 @@
     <description>Recent content on Raúl Cumplido&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 28 Feb 2019 20:40:19 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 02 Mar 2019 12:15:19 +0000</lastBuildDate>
     
 	<atom:link href="https://raul.dev/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Data structures: Python lists</title>
+      <link>https://raul.dev/post/python_list_data_structure/</link>
+      <pubDate>Sat, 02 Mar 2019 12:15:19 +0000</pubDate>
+      
+      <guid>https://raul.dev/post/python_list_data_structure/</guid>
+      <description>Lately I&amp;rsquo;ve been reviewing some algorithms and some data structures. A python list is basically a dynamic array that allows to read and append at constant time.
+An array has constant read time O(1) but linear O(n) write time as everytime you need to add a new element a new array needs to be allocated in memory and copied to the new location.
+Python list has a constant insertion time.</description>
+    </item>
     
     <item>
       <title>Blog Reborn</title>
