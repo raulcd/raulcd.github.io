@@ -31,7 +31,7 @@
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav">
                     <section id="page-title">
-                        <a class="nav-item nav-link " href="/">Raúl Cumplido&#39;s Blog</a>
+                        <a class="nav-item nav-link active" href="/">Raúl Cumplido&#39;s Blog</a>
                     </section>
                     <a class="nav-item nav-link" href="https://github.com/raulcd"
                         target="_blank">GitHub</a>
@@ -48,139 +48,86 @@
     <article>
         <h1>Create Blog using Pelican and deploy in github pages</h1>
         <div class="date-time-title">Monday, July 7, 2014</div>
-        
-
-<p>This website has been created using pelican.
+        <p>This website has been created using pelican.
 <a href="http://pelican.readthedocs.org/">Pelican</a> is static site
 generator written in Python.</p>
-
 <p>Basically the needs for the project were:</p>
-
 <ul>
 <li>Easy deployment and mantainance</li>
 <li>Write articles using Markdown</li>
 <li>Code syntax highlighting</li>
 </ul>
-
 <p>After a quick research in order to select the framework
 to use in order to keep things simple, Pelican had all the features needed.</p>
-
 <h2 id="generation-of-website">Generation of website</h2>
-
 <p>Pelican is really easy to start with. You just need to create your project and
 install pelican:</p>
-
-<pre><code class="language-console">$ pip install pelican
-</code></pre>
-
-<p>If you want to use markdown you will need to install it as a dependency also:</p>
-
-<pre><code class="language-console">$ pip install markdown
-</code></pre>
-
-<p>Once you have installed pelican the only thing you need to do is generate the
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>$ pip install pelican
+</span></span></code></pre></div><p>If you want to use markdown you will need to install it as a dependency also:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>$ pip install markdown
+</span></span></code></pre></div><p>Once you have installed pelican the only thing you need to do is generate the
 skeleton of the blog:</p>
-
-<pre><code class="language-console">$ pelican-quickstart
-</code></pre>
-
-<p>It will prompt several questions about your site. Pelican automatically
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>$ pelican-quickstart
+</span></span></code></pre></div><p>It will prompt several questions about your site. Pelican automatically
 generates some files as a fabric script and a Makefile to make even easiers
 your deployments.</p>
-
 <p>Once this is done you will need to start writing your content under the
 content folder. You can add subfolders to the content folder and the names
 of the subfolders will be used as categories for your blogs.</p>
-
 <p>Once you have your article generated (<a href="https://github.com/raulcd/fonti/blob/master/content/articles/generate_pelican_blog.md">sample file</a>) is time to generate
 your site. There are several ways to generate your code:</p>
-
-<pre><code class="language-console">$ pelican content
-# Or you can use the generated Makefile
-$ make html
-</code></pre>
-
-<p>The next Exception was raised because my locale settings were
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>$ pelican content
+</span></span><span style="display:flex;"><span># Or you can use the generated Makefile
+</span></span><span style="display:flex;"><span>$ make html
+</span></span></code></pre></div><p>The next Exception was raised because my locale settings were
 not set:</p>
-
-<pre><code class="language-python">File &quot;.../lib/python2.7/locale.py&quot;, line 443, in _parse_localename
-    raise ValueError, 'unknown locale: %s' % localename
-ValueError: unknown locale: UTF-8
-</code></pre>
-
-<p>You can set your locale for your user (modifying your .bash_profile) or
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>File <span style="color:#e6db74">&#34;.../lib/python2.7/locale.py&#34;</span>, line <span style="color:#ae81ff">443</span>, <span style="color:#f92672">in</span> _parse_localename
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">raise</span> <span style="color:#a6e22e">ValueError</span>, <span style="color:#e6db74">&#39;unknown locale: </span><span style="color:#e6db74">%s</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span> localename
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">ValueError</span>: unknown locale: UTF<span style="color:#f92672">-</span><span style="color:#ae81ff">8</span>
+</span></span></code></pre></div><p>You can set your locale for your user (modifying your .bash_profile) or
 for the session:</p>
-
-<pre><code class="language-console">$ export LC_ALL=en_UK.UTF-8
-$ export LANG=en_UK.UTF-8
-</code></pre>
-
-<p>Once you have generated your content you can run a Development server
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>$ export LC_ALL<span style="color:#f92672">=</span>en_UK.UTF-8
+</span></span><span style="display:flex;"><span>$ export LANG<span style="color:#f92672">=</span>en_UK.UTF-8
+</span></span></code></pre></div><p>Once you have generated your content you can run a Development server
 to see the result:</p>
-
-<pre><code class="language-console">$ make serve
-</code></pre>
-
-<p>And you will be able to access localhost on the port 8000 by default
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>$ make serve
+</span></span></code></pre></div><p>And you will be able to access localhost on the port 8000 by default
 to see the result.</p>
-
 <h2 id="deployment-in-github-pages">Deployment in github pages</h2>
-
 <p>There are
 <a href="https://help.github.com/articles/user-organization-and-project-pages">two types of github pages</a>.
 Project and user ones. If you want
 to deploy to your project you can use the <em>github</em> target on the Makefile:</p>
-
-<pre><code class="language-console">$ make github
-</code></pre>
-
-<p>This will post to the github pages branch of your repository.</p>
-
-<p>But if you want to use the github pages under <strong><em>username.github.com</em></strong> you
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>$ make github
+</span></span></code></pre></div><p>This will post to the github pages branch of your repository.</p>
+<p>But if you want to use the github pages under <em><strong>username.github.com</strong></em> you
 will need to do something more.</p>
-
 <p>First of all you need to have a repository with your username at github. The
-repository needs to be called <strong><em>username.github.io</em></strong> in my case
-<strong><em>raulcd.github.io</em></strong>.</p>
-
+repository needs to be called <em><strong>username.github.io</strong></em> in my case
+<em><strong>raulcd.github.io</strong></em>.</p>
 <p>In order to make the process easier you can use the
 <a href="https://github.com/davisp/ghp-import">GitHub Pages Import</a>. You can install
 it using pip:</p>
-
-<pre><code class="language-console">$ pip install ghp-import
-</code></pre>
-
-<p>And to deploy you will need to run the next commands:</p>
-
-<pre><code class="language-console">$ make html
-$ ghp-import output
-$ git push git@github.com:username/username.github.io.git gh-pages:master
-</code></pre>
-
-<p>You can also modify your Makefile to run the github target executing the
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>$ pip install ghp-import
+</span></span></code></pre></div><p>And to deploy you will need to run the next commands:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>$ make html
+</span></span><span style="display:flex;"><span>$ ghp-import output
+</span></span><span style="display:flex;"><span>$ git push git@github.com:username/username.github.io.git gh-pages:master
+</span></span></code></pre></div><p>You can also modify your Makefile to run the github target executing the
 previous commands.</p>
-
 <p>Your code will be deployed and after some minutes it will be availabe at
-<strong><em><a href="http://username.github.com">http://username.github.com</a></em></strong>.</p>
-
+<em><strong><a href="http://username.github.com">http://username.github.com</a></strong></em>.</p>
 <p>If you have your own domain and want it to be redirected to your github pages
 you will need to create a <code>CNAME</code> file and deploy on github pages.</p>
-
 <p>Create a directory <code>content/extra</code> and a file named <code>CNAME</code> (upper case) with
 the domain you want to redirect:</p>
-
-<pre><code class="language-console">$ cat CNAME
-yourdomain.com
-</code></pre>
-
-<p>The you can use the <code>STATIC_PATHS</code> on the <code>pelicanconf.py</code> file to tell pelican
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>$ cat CNAME
+</span></span><span style="display:flex;"><span>yourdomain.com
+</span></span></code></pre></div><p>The you can use the <code>STATIC_PATHS</code> on the <code>pelicanconf.py</code> file to tell pelican
 to deploy the <code>CNAME</code> file in the root directory when generating the content:</p>
-
-<pre><code class="language-python">STATIC_PATHS = ['extra/CNAME']
-EXTRA_PATH_METADATA = {'extra/CNAME': {'path': 'CNAME'},}
-</code></pre>
-
-<p>You will need to configure an <code>A</code>, an <code>ALIAS</code> or a <code>CNAME</code> record on your DNS
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>STATIC_PATHS <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;extra/CNAME&#39;</span>]
+</span></span><span style="display:flex;"><span>EXTRA_PATH_METADATA <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#39;extra/CNAME&#39;</span>: {<span style="color:#e6db74">&#39;path&#39;</span>: <span style="color:#e6db74">&#39;CNAME&#39;</span>},}
+</span></span></code></pre></div><p>You will need to configure an <code>A</code>, an <code>ALIAS</code> or a <code>CNAME</code> record on your DNS
 provider to do the DNS redirection. You can see more info on the
 <a href="https://help.github.com/articles/adding-a-cname-file-to-your-repository">github pages domain configuration</a>.</p>
 
@@ -190,7 +137,7 @@ provider to do the DNS redirection. You can see more info on the
 <footer>
     <hr>
     <small>
-        &copy; Raúl Cumplido 2019 
+        &copy; Raúl Cumplido 2023 
     </small>
 </footer>
 </div> 

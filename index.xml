@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Raúl Cumplido&#39;s Blog</title>
@@ -6,10 +6,16 @@
     <description>Recent content on Raúl Cumplido&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 02 Mar 2019 12:15:19 +0000</lastBuildDate>
-    
-	<atom:link href="https://raul.dev/index.xml" rel="self" type="application/rss+xml" />
-    
+    <lastBuildDate>Tue, 28 Nov 2023 11:11:19 +0000</lastBuildDate><atom:link href="https://raul.dev/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Split Arrow CPP libraries on conda</title>
+      <link>https://raul.dev/post/split_libarrow_on_conda/</link>
+      <pubDate>Tue, 28 Nov 2023 11:11:19 +0000</pubDate>
+      
+      <guid>https://raul.dev/post/split_libarrow_on_conda/</guid>
+      <description>It has been a really long time since I have written anything but during the last year I have been involved in the development and releases of Apache Arrow and I have been contributing to the project and the overall ecosystem.
+One of the things I have worked during the last months has been to divide the Apache Arrow C++ conda package into subpackages in order to provide a more modular installation.</description>
+    </item>
     
     <item>
       <title>Data structures: Python lists</title>
@@ -19,7 +25,7 @@
       <guid>https://raul.dev/post/python_list_data_structure/</guid>
       <description>Lately I&amp;rsquo;ve been reviewing some algorithms and some data structures. A python list is basically a dynamic array that allows to read and append at constant time.
 An array has constant read time O(1) but linear O(n) write time as everytime you need to add a new element a new array needs to be allocated in memory and copied to the new location.
-Python list has a constant insertion time.</description>
+Python list has a constant insertion time. How is Python doing that?</description>
     </item>
     
     <item>
@@ -30,7 +36,7 @@ Python list has a constant insertion time.</description>
       <guid>https://raul.dev/post/blog_reborn/</guid>
       <description>It has been a really long time since I have not written anything. I started my own blog 4 years ago and I have decided to start writing again.
 There are several reasons behind it.
- I am always trying to learn but lately I am taking some efforts to do it more consistently. I want to have a place where I can put my notes. Having them publicly available might help someone.</description>
+I am always trying to learn but lately I am taking some efforts to do it more consistently. I want to have a place where I can put my notes. Having them publicly available might help someone.</description>
     </item>
     
     <item>
@@ -64,7 +70,7 @@ ELK Stack The first thing to notice when using it is how easy to use is. It took
       <guid>https://raul.dev/post/generate_pelican_blog/</guid>
       <description>This website has been created using pelican. Pelican is static site generator written in Python.
 Basically the needs for the project were:
- Easy deployment and mantainance Write articles using Markdown Code syntax highlighting  After a quick research in order to select the framework to use in order to keep things simple, Pelican had all the features needed.
+Easy deployment and mantainance Write articles using Markdown Code syntax highlighting After a quick research in order to select the framework to use in order to keep things simple, Pelican had all the features needed.
 Generation of website Pelican is really easy to start with. You just need to create your project and install pelican:</description>
     </item>
     

@@ -31,7 +31,7 @@
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav">
                     <section id="page-title">
-                        <a class="nav-item nav-link " href="/">Raúl Cumplido&#39;s Blog</a>
+                        <a class="nav-item nav-link active" href="/">Raúl Cumplido&#39;s Blog</a>
                     </section>
                     <a class="nav-item nav-link" href="https://github.com/raulcd"
                         target="_blank">GitHub</a>
@@ -48,236 +48,162 @@
     <article>
         <h1>How Python caches compiled bytecode.</h1>
         <div class="date-time-title">Tuesday, March 17, 2015</div>
-        
-
-<p>While reading an email at the Python developers mailing list about PEP-488 (which is not yet approved and is under discussion) I wondered how bytecode files works in Python.</p>
-
+        <p>While reading an email at the Python developers mailing list about PEP-488 (which is not yet approved and is under discussion) I wondered how bytecode files works in Python.</p>
 <p>The purpose of this post is to take some notes for myself and share what I find.</p>
-
 <h2 id="pep-3147">PEP-3147</h2>
-
 <p>While I was reading the proposed PEP-488 (which will be explained later) there was several references to <a href="https://www.python.org/dev/peps/pep-3147">PEP-3147</a>.</p>
-
 <p>Before PEP-3147 was implemented, files were saved with the format <code>'{filename}.pyc'</code> (or .pyo) in the same directory where the source code was stored.</p>
-
 <p>PEP-3147 was created as an extension to the Python import mechanism in order to improve sharing of compiled Python bytecode for different distributions with the sourcecode.</p>
-
-<p>CPython compiles its source code into <code>bytecode</code>. For performance reasons Python doesn&rsquo;t recompile every time, so it caches the content of the compiled code. Python only recompiles when it realizes the source code file has changed. Python stores in the cached compiled file two 32bit big-endian digits which represents a <strong><em>magic number</em></strong> and a timestamp. The magic number changes every time the Python distribution changes the bytecode (for example adding new bytecode instructions to the virtual machine). This prevents causing problems when trying to execute compiled code for different virtual machines.</p>
-
+<p>CPython compiles its source code into <code>bytecode</code>. For performance reasons Python doesn&rsquo;t recompile every time, so it caches the content of the compiled code. Python only recompiles when it realizes the source code file has changed. Python stores in the cached compiled file two 32bit big-endian digits which represents a <em><strong>magic number</strong></em> and a timestamp. The magic number changes every time the Python distribution changes the bytecode (for example adding new bytecode instructions to the virtual machine). This prevents causing problems when trying to execute compiled code for different virtual machines.</p>
 <p>As some distributions have different versions of Python installed and users can install their different versions the previous mechanism doesn&rsquo;t allow to reuse the compiled files.</p>
-
 <p>PEP-3147 extended this by creating on every package a <code>__pycache__</code> directory which can contain different versions of the compiled files. The format of the names is now <code>{filename}.{tag}.pyc</code>. The tag can be seen on the <code>imp module</code>:</p>
-
-<pre><code class="language-python">&gt;&gt;&gt; import imp
-&gt;&gt;&gt; imp.get_tag()
-'cpython-34'
-</code></pre>
-
-<p>The magic number used on the pyc files can also be found on this module:</p>
-
-<pre><code class="language-python">&gt;&gt;&gt; imp.get_magic()
-b'\xee\x0c\r\n'
-</code></pre>
-
-<p>As expected when using another version of Python the magic numbers change:</p>
-
-<pre><code class="language-python">Python 3.5.0a0 (default:c0d25de5919e, Jan 30 2015, 22:23:54)
-[GCC 4.2.1 Compatible Apple LLVM 6.0 (clang-600.0.56)] on darwin
-Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
-&gt;&gt;&gt; import imp
-&gt;&gt;&gt; imp.get_tag()
-'cpython-35'
-&gt;&gt;&gt; imp.get_magic()
-b'\xf8\x0c\r\n'
-</code></pre>
-
-<p>PEP-3147 was introduced on python 3.2 if we try with Python 2.7.9 we can verify that <code>get_magic()</code> exists but not <code>get_tag()</code>:</p>
-
-<pre><code class="language-python">Python 2.7.9 (v2.7.9:648dcafa7e5f, Dec 10 2014, 10:10:46)
-[GCC 4.2.1 (Apple Inc. build 5666) (dot 3)] on darwin
-Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
-&gt;&gt;&gt; import imp
-&gt;&gt;&gt; imp.get_magic()
-'\x03\xf3\r\n'
-&gt;&gt;&gt; imp.get_tag()
-Traceback (most recent call last):
-  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
-AttributeError: 'module' object has no attribute 'get_tag'
-</code></pre>
-
-<p>This is why if we use Python2 we still see the <code>.pyc</code> or <code>.pyo</code> files amongst with our code:</p>
-
-<pre><code class="language-console">.
-|-- __init__.py
-|-- __init__.pyc
-|-- api.py
-|-- api.pyc
-|-- module
-|   |-- __init__.py
-|   |-- __init__.pyc
-|   |-- raul.py
-|   |-- raul.pyc
-</code></pre>
-
-<p>If the PEP has been implemented we can see something like this:</p>
-
-<pre><code class="language-console">|-- meteora
-|   |-- __init__.py
-|   |-- __pycache__
-|   |   |-- __init__.cpython-35.pyc
-|   |   |-- __init__.cpython-34.pyc
-|   |   |-- utils.cpython-35.pyc
-|   |   `-- utils.cpython-34.pyc
-|   `-- utils.py
-</code></pre>
-
-<h2 id="to-recompile-or-not-to-recompile">To recompile or not to recompile</h2>
-
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#f92672">import</span> imp
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> imp<span style="color:#f92672">.</span>get_tag()
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;cpython-34&#39;</span>
+</span></span></code></pre></div><p>The magic number used on the pyc files can also be found on this module:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> imp<span style="color:#f92672">.</span>get_magic()
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">b</span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\xee\x0c\r\n</span><span style="color:#e6db74">&#39;</span>
+</span></span></code></pre></div><p>As expected when using another version of Python the magic numbers change:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>Python <span style="color:#ae81ff">3.5.0</span>a0 (default:c0d25de5919e, Jan <span style="color:#ae81ff">30</span> <span style="color:#ae81ff">2015</span>, <span style="color:#ae81ff">22</span>:<span style="color:#ae81ff">23</span>:<span style="color:#ae81ff">54</span>)
+</span></span><span style="display:flex;"><span>[GCC <span style="color:#ae81ff">4.2.1</span> Compatible Apple LLVM <span style="color:#ae81ff">6.0</span> (clang<span style="color:#f92672">-</span><span style="color:#ae81ff">600.0.56</span>)] on darwin
+</span></span><span style="display:flex;"><span>Type <span style="color:#e6db74">&#34;help&#34;</span>, <span style="color:#e6db74">&#34;copyright&#34;</span>, <span style="color:#e6db74">&#34;credits&#34;</span> <span style="color:#f92672">or</span> <span style="color:#e6db74">&#34;license&#34;</span> <span style="color:#66d9ef">for</span> more information<span style="color:#f92672">.</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#f92672">import</span> imp
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> imp<span style="color:#f92672">.</span>get_tag()
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;cpython-35&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> imp<span style="color:#f92672">.</span>get_magic()
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">b</span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\xf8\x0c\r\n</span><span style="color:#e6db74">&#39;</span>
+</span></span></code></pre></div><p>PEP-3147 was introduced on python 3.2 if we try with Python 2.7.9 we can verify that <code>get_magic()</code> exists but not <code>get_tag()</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>Python <span style="color:#ae81ff">2.7.9</span> (v2<span style="color:#ae81ff">.7.9</span>:<span style="color:#ae81ff">648</span>dcafa7e5f, Dec <span style="color:#ae81ff">10</span> <span style="color:#ae81ff">2014</span>, <span style="color:#ae81ff">10</span>:<span style="color:#ae81ff">10</span>:<span style="color:#ae81ff">46</span>)
+</span></span><span style="display:flex;"><span>[GCC <span style="color:#ae81ff">4.2.1</span> (Apple Inc<span style="color:#f92672">.</span> build <span style="color:#ae81ff">5666</span>) (dot <span style="color:#ae81ff">3</span>)] on darwin
+</span></span><span style="display:flex;"><span>Type <span style="color:#e6db74">&#34;help&#34;</span>, <span style="color:#e6db74">&#34;copyright&#34;</span>, <span style="color:#e6db74">&#34;credits&#34;</span> <span style="color:#f92672">or</span> <span style="color:#e6db74">&#34;license&#34;</span> <span style="color:#66d9ef">for</span> more information<span style="color:#f92672">.</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#f92672">import</span> imp
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> imp<span style="color:#f92672">.</span>get_magic()
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\x03\xf3\r\n</span><span style="color:#e6db74">&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> imp<span style="color:#f92672">.</span>get_tag()
+</span></span><span style="display:flex;"><span>Traceback (most recent call last):
+</span></span><span style="display:flex;"><span>  File <span style="color:#e6db74">&#34;&lt;stdin&gt;&#34;</span>, line <span style="color:#ae81ff">1</span>, <span style="color:#f92672">in</span> <span style="color:#f92672">&lt;</span>module<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">AttributeError</span>: <span style="color:#e6db74">&#39;module&#39;</span> object has no attribute <span style="color:#e6db74">&#39;get_tag&#39;</span>
+</span></span></code></pre></div><p>This is why if we use Python2 we still see the <code>.pyc</code> or <code>.pyo</code> files amongst with our code:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>.
+</span></span><span style="display:flex;"><span>|-- __init__.py
+</span></span><span style="display:flex;"><span>|-- __init__.pyc
+</span></span><span style="display:flex;"><span>|-- api.py
+</span></span><span style="display:flex;"><span>|-- api.pyc
+</span></span><span style="display:flex;"><span>|-- module
+</span></span><span style="display:flex;"><span>|   |-- __init__.py
+</span></span><span style="display:flex;"><span>|   |-- __init__.pyc
+</span></span><span style="display:flex;"><span>|   |-- raul.py
+</span></span><span style="display:flex;"><span>|   |-- raul.pyc
+</span></span></code></pre></div><p>If the PEP has been implemented we can see something like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>|-- meteora
+</span></span><span style="display:flex;"><span>|   |-- __init__.py
+</span></span><span style="display:flex;"><span>|   |-- __pycache__
+</span></span><span style="display:flex;"><span>|   |   |-- __init__.cpython-35.pyc
+</span></span><span style="display:flex;"><span>|   |   |-- __init__.cpython-34.pyc
+</span></span><span style="display:flex;"><span>|   |   |-- utils.cpython-35.pyc
+</span></span><span style="display:flex;"><span>|   |   `-- utils.cpython-34.pyc
+</span></span><span style="display:flex;"><span>|   `-- utils.py
+</span></span></code></pre></div><h2 id="to-recompile-or-not-to-recompile">To recompile or not to recompile</h2>
 <p>The next diagram has been extracted directly from the PEP-3147 which explains clearly what is the workflow to load/compile the bytecode when importing:</p>
-
-<p><img src="/img/pep-3147-1.png" alt="PEP 3147 Workflow" /></p>
-
+<p><img src="/img/pep-3147-1.png" alt="PEP 3147 Workflow"></p>
 <p>As previously explained the <code>pyc</code> file matches when both the magic number and the timestamp of the source file matches exactly in the compiled file.</p>
-
 <p>When Python is asked to <code>import foo</code> it searches on <code>sys.path</code> if the file exists. If it is not found it checks whether there is a <code>foo.pyc</code> file. In case the <code>foo.pyc</code> file exists it will load it. Otherwise it will raise an ImportError.</p>
-
 <p>If the file <code>foo.py</code> exists Python will check if there is a <code>__pycache__/foo.{magic}.pyc</code> file that matches the source file. In the case of match it will load it.</p>
-
 <p>If the <code>__pycache__/foo.{magic}.pyc</code> doesn&rsquo;t exist or doesn&rsquo;t match (timestamp changed) it checks whether the <code>__pycache__</code> directory has been created or not, and if it&rsquo;s not created it creates it.</p>
-
 <p>Finally it compiles the <code>foo.py</code> file and it generates the <code>__pycache__/foo.{magic}.pyc</code> file.</p>
-
 <h2 id="pep-488">PEP-488</h2>
-
 <p>The purpose of the (not yet approved) PEP is to remove the PYO files which are Python Bytecode Optimized files.</p>
-
 <h3 id="current-behaviour">Current behaviour:</h3>
-
 <p>Currently bytecode files can be PYC and PYO. A PYC file is a bytecode file when no optimization level has been applied on startup.
 PYO files are files that are generated when optimization has been specified (<code>-O</code> or <code>-OO</code>).</p>
-
 <p>In order to test the different levels of optimizations I&rsquo;ve created the next simple test:</p>
-
-<pre><code class="language-console">.
-|-- api
-    |-- __init__.py
-</code></pre>
-
-<p>My <code>__init__.py</code> file consists of:</p>
-
-<pre><code class="language-python">def test():
-    &quot;&quot;&quot;
-    This is my test function
-    &quot;&quot;&quot;
-    assert False == True
-</code></pre>
-
-<p>If we execute python without any optimization we can see that the docstring of our function is there and the assertion fails as it&rsquo;s executed:</p>
-
-<pre><code class="language-console">raulcd@test  $ python3
-Python 3.4.2 (v3.4.2:ab2c023a9432, Oct  5 2014, 20:42:22)
-[GCC 4.2.1 (Apple Inc. build 5666) (dot 3)] on darwin
-Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
-&gt;&gt;&gt; import api
-&gt;&gt;&gt; api.test.__doc__
-'\n    This is my test function\n    '
-&gt;&gt;&gt; api.test()
-Traceback (most recent call last):
-  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
-  File &quot;/Users/raulcd/test/api/__init__.py&quot;, line 5, in test
-    assert False == True
-AssertionError
-&gt;&gt;&gt;
-</code></pre>
-
-<p>We can also verify that the compiled bytecode is:</p>
-
-<pre><code class="language-console">.
-`-- api
-    |-- __init__.py
-    `-- __pycache__
-        `-- __init__.cpython-34.pyc
-</code></pre>
-
-<p>When we execute with <code>-O</code> we can see that assertion doesn&rsquo;t fail as this optimization removes the assertions from our code:</p>
-
-<pre><code class="language-console">raulcd@test  $ python3 -O
-Python 3.4.2 (v3.4.2:ab2c023a9432, Oct  5 2014, 20:42:22)
-[GCC 4.2.1 (Apple Inc. build 5666) (dot 3)] on darwin
-Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
-&gt;&gt;&gt; import api
-&gt;&gt;&gt; api.test.__doc__
-'\n    This is my test function\n    '
-&gt;&gt;&gt; api.test()
-&gt;&gt;&gt;
-</code></pre>
-
-<p>We can also see that the compiled file generated is:</p>
-
-<pre><code class="language-console">.
-`-- api
-    |-- __init__.py
-    `-- __pycache__
-        |-- __init__.cpython-34.pyc
-        `-- __init__.cpython-34.pyo
-
-2 directories, 3 files
-raulcd@test  $ ls -lrt api/__pycache__/
-total 16
--rw-r--r--  1 raulcd  staff  280 Mar 17 11:19 __init__.cpython-34.pyc
--rw-r--r--  1 raulcd  staff  247 Mar 17 11:23 __init__.cpython-34.pyo
-</code></pre>
-
-<p>If we execute Python with <code>-OO</code> we can see that both the assertion and the docstring have disappeared. Note that I need to manually remove the <code>.pyo</code> file as Python import mechanism will not recompile (as per the workflow explained before, file has not changed and already exists the <code>.pyo</code> file):</p>
-
-<pre><code class="language-console">raulcd@test  $ rm api/__pycache__/__init__.cpython-34.pyo
-raulcd@test  $ python3 -OO
-Python 3.4.2 (v3.4.2:ab2c023a9432, Oct  5 2014, 20:42:22)
-[GCC 4.2.1 (Apple Inc. build 5666) (dot 3)] on darwin
-Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
-&gt;&gt;&gt; import api
-&gt;&gt;&gt; api.test.__doc__
-&gt;&gt;&gt; api.test()
-&gt;&gt;&gt;
-</code></pre>
-
-<p>The generated <code>.pyo</code> file has the same name but we can see that the content is different and the size:</p>
-
-<pre><code class="language-console">.
-`-- api
-    |-- __init__.py
-    `-- __pycache__
-        |-- __init__.cpython-34.pyc
-        `-- __init__.cpython-34.pyo
-
-2 directories, 3 files
-raulcd@test  $ ls -lrt api/__pycache__/
-total 16
--rw-r--r--  1 raulcd  staff  280 Mar 17 11:19 __init__.cpython-34.pyc
--rw-r--r--  1 raulcd  staff  211 Mar 17 11:28 __init__.cpython-34.pyo
-</code></pre>
-
-<p>Currently there is no way to know whether a PYO file has been executed with different levels of optimization. So when a new level of optimization wants to be applied all PYO files need to be removed and regenerated.</p>
-
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>.
+</span></span><span style="display:flex;"><span>|-- api
+</span></span><span style="display:flex;"><span>    |-- __init__.py
+</span></span></code></pre></div><p>My <code>__init__.py</code> file consists of:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">test</span>():
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    This is my test function
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">assert</span> <span style="color:#66d9ef">False</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">True</span>
+</span></span></code></pre></div><p>If we execute python without any optimization we can see that the docstring of our function is there and the assertion fails as it&rsquo;s executed:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>raulcd@test  $ python3
+</span></span><span style="display:flex;"><span>Python 3.4.2 (v3.4.2:ab2c023a9432, Oct  5 2014, 20:42:22)
+</span></span><span style="display:flex;"><span>[GCC 4.2.1 (Apple Inc. build 5666) (dot 3)] on darwin
+</span></span><span style="display:flex;"><span>Type &#34;help&#34;, &#34;copyright&#34;, &#34;credits&#34; or &#34;license&#34; for more information.
+</span></span><span style="display:flex;"><span>&gt;&gt;&gt; import api
+</span></span><span style="display:flex;"><span>&gt;&gt;&gt; api.test.__doc__
+</span></span><span style="display:flex;"><span>&#39;\n    This is my test function\n    &#39;
+</span></span><span style="display:flex;"><span>&gt;&gt;&gt; api.test<span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>Traceback (most recent call last):
+</span></span><span style="display:flex;"><span>  File &#34;&lt;stdin&gt;&#34;, line 1, in &lt;module&gt;
+</span></span><span style="display:flex;"><span>  File &#34;/Users/raulcd/test/api/__init__.py&#34;, line 5, in test
+</span></span><span style="display:flex;"><span>    assert False == True
+</span></span><span style="display:flex;"><span>AssertionError
+</span></span><span style="display:flex;"><span>&gt;&gt;&gt;
+</span></span></code></pre></div><p>We can also verify that the compiled bytecode is:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>.
+</span></span><span style="display:flex;"><span>`-- api
+</span></span><span style="display:flex;"><span>    |-- __init__.py
+</span></span><span style="display:flex;"><span>    `-- __pycache__
+</span></span><span style="display:flex;"><span>        `-- __init__.cpython-34.pyc
+</span></span></code></pre></div><p>When we execute with <code>-O</code> we can see that assertion doesn&rsquo;t fail as this optimization removes the assertions from our code:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>raulcd@test  $ python3 -O
+</span></span><span style="display:flex;"><span>Python 3.4.2 (v3.4.2:ab2c023a9432, Oct  5 2014, 20:42:22)
+</span></span><span style="display:flex;"><span>[GCC 4.2.1 (Apple Inc. build 5666) (dot 3)] on darwin
+</span></span><span style="display:flex;"><span>Type &#34;help&#34;, &#34;copyright&#34;, &#34;credits&#34; or &#34;license&#34; for more information.
+</span></span><span style="display:flex;"><span>&gt;&gt;&gt; import api
+</span></span><span style="display:flex;"><span>&gt;&gt;&gt; api.test.__doc__
+</span></span><span style="display:flex;"><span>&#39;\n    This is my test function\n    &#39;
+</span></span><span style="display:flex;"><span>&gt;&gt;&gt; api.test<span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>&gt;&gt;&gt;
+</span></span></code></pre></div><p>We can also see that the compiled file generated is:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>.
+</span></span><span style="display:flex;"><span>`-- api
+</span></span><span style="display:flex;"><span>    |-- __init__.py
+</span></span><span style="display:flex;"><span>    `-- __pycache__
+</span></span><span style="display:flex;"><span>        |-- __init__.cpython-34.pyc
+</span></span><span style="display:flex;"><span>        `-- __init__.cpython-34.pyo
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span>2 directories, 3 files
+</span></span><span style="display:flex;"><span>raulcd@test  $ ls -lrt api/__pycache__/
+</span></span><span style="display:flex;"><span>total 16
+</span></span><span style="display:flex;"><span>-rw-r--r--  1 raulcd  staff  280 Mar 17 11:19 __init__.cpython-34.pyc
+</span></span><span style="display:flex;"><span>-rw-r--r--  1 raulcd  staff  247 Mar 17 11:23 __init__.cpython-34.pyo
+</span></span></code></pre></div><p>If we execute Python with <code>-OO</code> we can see that both the assertion and the docstring have disappeared. Note that I need to manually remove the <code>.pyo</code> file as Python import mechanism will not recompile (as per the workflow explained before, file has not changed and already exists the <code>.pyo</code> file):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>raulcd@test  $ rm api/__pycache__/__init__.cpython-34.pyo
+</span></span><span style="display:flex;"><span>raulcd@test  $ python3 -OO
+</span></span><span style="display:flex;"><span>Python 3.4.2 (v3.4.2:ab2c023a9432, Oct  5 2014, 20:42:22)
+</span></span><span style="display:flex;"><span>[GCC 4.2.1 (Apple Inc. build 5666) (dot 3)] on darwin
+</span></span><span style="display:flex;"><span>Type &#34;help&#34;, &#34;copyright&#34;, &#34;credits&#34; or &#34;license&#34; for more information.
+</span></span><span style="display:flex;"><span>&gt;&gt;&gt; import api
+</span></span><span style="display:flex;"><span>&gt;&gt;&gt; api.test.__doc__
+</span></span><span style="display:flex;"><span>&gt;&gt;&gt; api.test<span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>&gt;&gt;&gt;
+</span></span></code></pre></div><p>The generated <code>.pyo</code> file has the same name but we can see that the content is different and the size:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>.
+</span></span><span style="display:flex;"><span>`-- api
+</span></span><span style="display:flex;"><span>    |-- __init__.py
+</span></span><span style="display:flex;"><span>    `-- __pycache__
+</span></span><span style="display:flex;"><span>        |-- __init__.cpython-34.pyc
+</span></span><span style="display:flex;"><span>        `-- __init__.cpython-34.pyo
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span>2 directories, 3 files
+</span></span><span style="display:flex;"><span>raulcd@test  $ ls -lrt api/__pycache__/
+</span></span><span style="display:flex;"><span>total 16
+</span></span><span style="display:flex;"><span>-rw-r--r--  1 raulcd  staff  280 Mar 17 11:19 __init__.cpython-34.pyc
+</span></span><span style="display:flex;"><span>-rw-r--r--  1 raulcd  staff  211 Mar 17 11:28 __init__.cpython-34.pyo
+</span></span></code></pre></div><p>Currently there is no way to know whether a PYO file has been executed with different levels of optimization. So when a new level of optimization wants to be applied all PYO files need to be removed and regenerated.</p>
 <h3 id="pep-488-proposal">PEP-488 Proposal</h3>
-
 <p>The PEP proposes to remove PYO files by adding the optimization level applied to the PYC file incorporating it to the file name.</p>
-
 <p>Currently bytecode files names are created by <code>importlib.util.cache_from_source()</code> using the expression defined on PEP 3147:</p>
-
-<pre><code class="language-python">{name}.{cache_tag}.pyc.format(name=module_name, cache_tag=sys.implemenetation.cache_tag)
-</code></pre>
-
-<p>The PEP proposes to add the optimization level by modifiying the name to:</p>
-
-<pre><code class="language-python">{name}.{cache_tag}.opt-{optimization}.pyc'.format(
-    name=module_name, cache_tag=sys.implementation.cache_tag,
-    optimization=str(sys.flags.optimize)
-)
-</code></pre>
-
-<p>The &ldquo;opt-&rdquo; prefix was choosen to provide a visual separator from the cache tag.</p>
-
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>{name}<span style="color:#f92672">.</span>{cache_tag}<span style="color:#f92672">.</span>pyc<span style="color:#f92672">.</span>format(name<span style="color:#f92672">=</span>module_name, cache_tag<span style="color:#f92672">=</span>sys<span style="color:#f92672">.</span>implemenetation<span style="color:#f92672">.</span>cache_tag)
+</span></span></code></pre></div><p>The PEP proposes to add the optimization level by modifiying the name to:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>{name}<span style="color:#f92672">.</span>{cache_tag}<span style="color:#f92672">.</span>opt<span style="color:#f92672">-</span>{optimization}<span style="color:#f92672">.</span>pyc<span style="color:#e6db74">&#39;.format(</span>
+</span></span><span style="display:flex;"><span>    name<span style="color:#f92672">=</span>module_name, cache_tag<span style="color:#f92672">=</span>sys<span style="color:#f92672">.</span>implementation<span style="color:#f92672">.</span>cache_tag,
+</span></span><span style="display:flex;"><span>    optimization<span style="color:#f92672">=</span>str(sys<span style="color:#f92672">.</span>flags<span style="color:#f92672">.</span>optimize)
+</span></span><span style="display:flex;"><span>)
+</span></span></code></pre></div><p>The &ldquo;opt-&rdquo; prefix was choosen to provide a visual separator from the cache tag.</p>
 <p>And that&rsquo;s all for today :)</p>
 
     </article>
@@ -286,7 +212,7 @@ total 16
 <footer>
     <hr>
     <small>
-        &copy; Raúl Cumplido 2019 
+        &copy; Raúl Cumplido 2023 
     </small>
 </footer>
 </div> 

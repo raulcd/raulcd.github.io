@@ -31,7 +31,7 @@
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav">
                     <section id="page-title">
-                        <a class="nav-item nav-link " href="/">Raúl Cumplido&#39;s Blog</a>
+                        <a class="nav-item nav-link active" href="/">Raúl Cumplido&#39;s Blog</a>
                     </section>
                     <a class="nav-item nav-link" href="https://github.com/raulcd"
                         target="_blank">GitHub</a>
@@ -48,43 +48,29 @@
     <article>
         <h1>Data structures: Python lists</h1>
         <div class="date-time-title">Saturday, March 2, 2019</div>
-        
-
-<p>Lately I&rsquo;ve been reviewing some algorithms and some data structures. A python <code>list</code> is basically a
+        <p>Lately I&rsquo;ve been reviewing some algorithms and some data structures. A python <code>list</code> is basically a
 dynamic array that allows to read and append at constant time.</p>
-
 <p>An array has constant read time <code>O(1)</code> but linear <code>O(n)</code> write time as everytime you need to add a
 new element a new array needs to be allocated in memory and copied to the new location.</p>
-
 <p>Python list has a constant insertion time. How is Python doing that?</p>
-
 <h2 id="dynamic-array-and-insertion-amortized-time">Dynamic Array and insertion amortized time</h2>
-
 <p>A dynamic array doesn&rsquo;t allocate memory only for the current size but also for future elements.
 Some example of growth factor for different implementations can be found
 <a href="https://en.wikipedia.org/wiki/Dynamic_array#Growth_factor">here</a>.</p>
-
 <p>Amortized time basically means that probabilistically you can expect it to be constant but there are
 some moments where it will take linear time. These are the moments when it needs to reallocate and grow
 the array.</p>
-
 <h2 id="python-internal-implementantion-and-grow-ratio">Python internal implementantion and grow ratio</h2>
-
 <p>As an example we can see the size of a python list. When the list is empty the size of the object in bytes
 is the following.</p>
-
-<pre><code>&gt;&gt;&gt; l = []
+<pre tabindex="0"><code>&gt;&gt;&gt; l = []
 &gt;&gt;&gt; import sys
 &gt;&gt;&gt; sys.getsizeof(l)
 64
-</code></pre>
-
-<p>At this point the allocated space for elements is 0.</p>
-
+</code></pre><p>At this point the allocated space for elements is 0.</p>
 <p>When we add an element we allocate space for four elements that&rsquo;s why it will grow to 96 bytes on the example
 below until you add a 5th element when the list needs to grow again and reallocate memory.</p>
-
-<pre><code>&gt;&gt;&gt; l.append(1)
+<pre tabindex="0"><code>&gt;&gt;&gt; l.append(1)
 &gt;&gt;&gt; l
 [1]
 &gt;&gt;&gt; sys.getsizeof(l)
@@ -101,13 +87,10 @@ below until you add a 5th element when the list needs to grow again and realloca
 &gt;&gt;&gt; l.append(5)
 &gt;&gt;&gt; sys.getsizeof(l)
 128
-</code></pre>
-
-<p>In order to avoid growing/decreasing everytime if we reach a point of adding/deleting elements
+</code></pre><p>In order to avoid growing/decreasing everytime if we reach a point of adding/deleting elements
 There is a hysteresis period in the example below we see that once we remove the 5th element
 the list still could allocate 8 elements but when we continue reducing it gets reduced.</p>
-
-<pre><code>&gt;&gt;&gt; l.pop()
+<pre tabindex="0"><code>&gt;&gt;&gt; l.pop()
 5
 &gt;&gt;&gt; sys.getsizeof(l)
 128
@@ -115,40 +98,30 @@ the list still could allocate 8 elements but when we continue reducing it gets r
 4
 &gt;&gt;&gt; sys.getsizeof(l)
 112
-</code></pre>
-
-<p>Based on wikipedia we see that the growth factor on a python list is <code>~1.125</code>. This is basically the result
+</code></pre><p>Based on wikipedia we see that the growth factor on a python list is <code>~1.125</code>. This is basically the result
 of growing by allocating the <code>current size + (current_sizee &gt;&gt; 3) + constant</code>. Basically growing the current size
 shifted 3 bits plus a small constant for small sizes.
 The current implementation on
 <a href="https://github.com/python/cpython/blob/234531b4462b20d668762bd78406fd2ebab129c9/Objects/listobject.c#L61">cpython</a>:</p>
-
-<pre><code>    /* This over-allocates proportional to the list size, making room
+<pre tabindex="0"><code>    /* This over-allocates proportional to the list size, making room
      * for additional growth.  The over-allocation is mild, but is
      * enough to give linear-time amortized behavior over a long
      * sequence of appends() in the presence of a poorly-performing
      * system realloc().
      * The growth pattern is:  0, 4, 8, 16, 25, 35, 46, 58, 72, 88, ...
-     * Note: new_allocated won't overflow because the largest possible value
+     * Note: new_allocated won&#39;t overflow because the largest possible value
      *       is PY_SSIZE_T_MAX * (9 / 8) + 6 which always fits in a size_t.
      */
     new_allocated = (size_t)newsize + (newsize &gt;&gt; 3) + (newsize &lt; 9 ? 3 : 6);
-</code></pre>
-
-<p>I didn&rsquo;t really could get that on my head, the 3 bits shift so I did a small snippet to show the growth factor
+</code></pre><p>I didn&rsquo;t really could get that on my head, the 3 bits shift so I did a small snippet to show the growth factor
 <a href="https://github.com/raulcd/blog_tests/tree/master/list_data_structure_python">here</a></p>
-
 <p>With my snippet I could see something like when the list will grow and by how much:</p>
-
-<pre><code>Current size is: 991
+<pre tabindex="0"><code>Current size is: 991
 Grow shifted size by 3 bits : 123
 Small constant: 6
 New allocation ocurrs, size of allocation: 1120
-</code></pre>
-
-<p>And the growing ration which is where we get the <code>~0.125</code> growing ratio:</p>
-
-<pre><code>New allocation: 2062
+</code></pre><p>And the growing ration which is where we get the <code>~0.125</code> growing ratio:</p>
+<pre tabindex="0"><code>New allocation: 2062
 Growing ratio: 0.124576
 New allocation: 2326
 Growing ratio: 0.124624
@@ -178,14 +151,13 @@ New allocation: 9723
 Growing ratio: 0.124949
 New allocation: 10945
 </code></pre>
-
     </article>
 </div>
 
 <footer>
     <hr>
     <small>
-        &copy; Raúl Cumplido 2019 
+        &copy; Raúl Cumplido 2023 
     </small>
 </footer>
 </div> 

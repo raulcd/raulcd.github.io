@@ -11,7 +11,7 @@
 
     <link href="https://fonts.googleapis.com/css?family=Montserrat|Ubuntu+Mono" rel="stylesheet">
 
-    <title>Blog Reborn</title>
+    <title>Split Arrow CPP libraries on conda</title>
 
     <link rel="stylesheet" href="/css/stylesheet.css">
 </head>
@@ -46,25 +46,28 @@
 
 <div class="container single">
     <article>
-        <h1>Blog Reborn</h1>
-        <div class="date-time-title">Thursday, February 28, 2019</div>
-        <p>It has been a really long time since I have not written anything.
-I started my own blog 4 years ago and I have decided to start writing again.</p>
-<p>There are several reasons behind it.</p>
+        <h1>Split Arrow CPP libraries on conda</h1>
+        <div class="date-time-title">Tuesday, November 28, 2023</div>
+        <p>It has been a really long time since I have written anything but during the last year
+I have been involved in the development and releases of Apache Arrow and I have been
+contributing to the project and the overall ecosystem.</p>
+<p>One of the things I have worked during the last months has been to divide the Apache
+Arrow C++ conda package into subpackages in order to provide a more modular installation.</p>
+<p>Before Arrow 14.0.0 on conda we did provide a single libarrow package that contained a full
+build of Apache Arrow C++. Since 14.0.0 we also provide a single package with everything
+called <code>libarrow-all</code> which is a metapackage that pulls all the following libraries:</p>
 <ul>
-<li>I am always trying to learn but lately I am taking some efforts to do it more consistently.</li>
-<li>I want to have a place where I can put my notes.</li>
-<li>Having them publicly available might help someone.</li>
-<li>Improve my documentation and writing skills.</li>
+<li><code>libarrow</code></li>
+<li><code>libparquet</code></li>
+<li><code>libarrow-acero</code></li>
+<li><code>libarrow-dataset</code></li>
+<li><code>libarrow-flight</code></li>
+<li><code>libarrow-flight-sql</code></li>
+<li><code>libarrow-gandiva</code></li>
+<li><code>libarrow-substrait</code></li>
 </ul>
-<p>My interests and experience are different since I started writing my first blog posts
-and no matter I am expecting the blog to be mostly technical I might be posting
-about other topics.</p>
-<p>My current technical interests are around algorithms, maths, security, linux, containers,
-kubernetes, cloud, python, go. My non-technical ones are more around practicing and
-learning to play the guitar, sporadically drawing, photography.</p>
-<p>In the past I have been working as a software developer and leading small teams.</p>
-<p>I am learning on all of the topics above and by no means I am an expert on any field.</p>
+<p>Those are also provided individually with the following dependencies:</p>
+<p><img src="/img/libarrow_package_dependency.jpg" alt="libarrow packages"></p>
 
     </article>
 </div>
