@@ -6,7 +6,17 @@
     <description>Recent content on Raúl Cumplido&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 28 Nov 2023 11:11:19 +0000</lastBuildDate><atom:link href="https://raul.dev/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 05 Feb 2025 11:11:19 +0000</lastBuildDate><atom:link href="https://raul.dev/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Keeping symbols to yourself</title>
+      <link>https://raul.dev/post/symbol_table_and_dynamic_symbol_table/</link>
+      <pubDate>Wed, 05 Feb 2025 11:11:19 +0000</pubDate>
+      
+      <guid>https://raul.dev/post/symbol_table_and_dynamic_symbol_table/</guid>
+      <description>I usually forget things so I created this blog post so I can come back to it in the future with what I learnt while working on it.
+The One Definition Rule on C++ tells us that we can&amp;rsquo;t have more than one definition in the entire program for classes and structs. I hit some issues with it while doing some work on Arrow in order to load newer Kernels into older versions of Arrow.</description>
+    </item>
+    
     <item>
       <title>Split Arrow CPP libraries on conda</title>
       <link>https://raul.dev/post/split_libarrow_on_conda/</link>
